@@ -133,5 +133,21 @@ Doppler's Docker infrastructure
         1. Preparo mi acceso . . .
         ```
 
-    4. 
+3. Instalo Docker en los servers
+   
+   Sigo los pasos del [tutorial de digital ocean](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04)
+
+   ```
+   $ sudo apt update && sudo apt install apt-transport-https ca-certificates curl software-properties-common
+   $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+   $ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+   $ sudo apt update
+   $ apt-cache policy docker-ce
+   $ sudo apt install docker-ce
+   
+   ```
+
+4. Sigo el [tutorial de Swarm](https://docs.docker.com/engine/swarm/swarm-tutorial/), aunque con 2 servidores en lugar de 3.
+
+5. 
 
