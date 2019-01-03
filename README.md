@@ -118,7 +118,10 @@ Doppler's Docker infrastructure
         $ cd /var
         $ git clone git@github.com:MakingSense/doppler-devops.git
         $ cd doppler-devops
-        $ git pull
+        $ # Para actualizar
+        $ # git pull
+        $ # Para actualizar forzando reset
+        $ # git fetch --all && git reset --hard origin/master
         $ cat README.md
         # doppler-devops
         Doppler's Docker infrastructure
