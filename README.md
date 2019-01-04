@@ -147,7 +147,7 @@ Doppler's Docker infrastructure
    
    ```
 
-4. Sigo el [tutorial de Swarm](https://docs.docker.com/engine/swarm/swarm-tutorial/), aunque con 2 servidores en lugar de 3.
+4. Sigo el [tutorial de Swarm](https://docs.docker.com/engine/swarm/swarm-tutorial/), aunque con 2 servidores en lugar de 3 y apuntando a la imagen de _doppler-reports-api_ ([andresmoschini/doppler-reports-api](https://cloud.docker.com/repository/docker/andresmoschini/doppler-reports-api)) que se genera cuando se hacen los merges a master en el repo [doppler-reports-api](https://github.com/MakingSense/doppler-reports-api) **_[INCOMPLETO]_**
 
 5. 
 
