@@ -147,7 +147,34 @@ Doppler's Docker infrastructure
    
    ```
 
-4. Sigo el [tutorial de Swarm](https://docs.docker.com/engine/swarm/swarm-tutorial/), aunque con 2 servidores en lugar de 3 y apuntando a la imagen de _doppler-reports-api_ ([andresmoschini/doppler-reports-api](https://cloud.docker.com/repository/docker/andresmoschini/doppler-reports-api)) que se genera cuando se hacen los merges a master en el repo [doppler-reports-api](https://github.com/MakingSense/doppler-reports-api) **_[INCOMPLETO]_**
+4. Sigo el [tutorial de Swarm](https://docs.docker.com/engine/swarm/swarm-tutorial/), aunque con 2 servidores en lugar de 3 y apuntando a la imagen de _doppler-reports-api_ ([andresmoschini/doppler-reports-api](https://cloud.docker.com/repository/docker/andresmoschini/doppler-reports-api)) que se genera cuando se hacen los merges a master en el repo [doppler-reports-api](https://github.com/MakingSense/doppler-reports-api) 
+ Primero abrimos los puertos en los servidores para habilitar las conecciones entre los nodos del swarm:
+ - sudo ufw allow from [ServerIp] to any port 2377 proto tcp
+ - sudo ufw allow from [ServerIp] to any port 7946 proto tcp
+ - sudo ufw allow from [ServerIp] to any port 7946 proto udp
+ - sudo ufw allow from [ServerIp] to any port 4789 proto udp
+ 
+ Luego se crea el swarm (esto es solo a modo de guia ya que el token esta desactulizado)
+ En ubuntu-01:
+  sudo docker swarm init --advertise-addr 142.93.180.201
+ En ubuntu-02 lo unimos al swarm como worker:
+ sudo docker swarm join --token SWMTKN-1-3r2339v5uhpcz97mmhsf1i8nex9d84femy4hrtgmnf9iyxlmtu-24q5mefbf9kdg4jg3teuwsjo5 142.93.180.201:2377
+ 
+ Para obetener un token actualizado: sudo docker swarm join-token worker
+ Para promover un nodo a manager desde el nodo manager: sudo docker node promote [ServerIp]
+ 
+5. Creamos el servicio de la api en el swarm
 
-5. 
+ Primero nos autenticamos en el repositorio de docker
+ docker login (va a pedir username y password)
+ Este paso hay que revisarlo con mas profundida porque los accesos a docker quedan guardados en un archivo json sin encriptacion, docker facilita algunas aplicaciones para guardar passwords encriptados pero se colgaba la consola y no se pudo encriptar.
+ Luego traemos la imagen del repositorio:
+ sudo docker pull andresmoschini/doppler-reports-api
+  Creamos el servicio:
+  sudo docker service create --mode global --name (nombre cualquiera) --publish published=XXXX,target=xx andresmoschini/doppler-reports-api
+  el commando --mode global hace referencia a que cada vez que se una un nodo se cree el servicio en el mismo, siempre que tenga la imagen.
+  Published hace referencia a el puerto externo (o published-port segun docker)
+  target hace referencia a el puerto de la aplicacion (o container-port segun docker)
+  
+  
 
