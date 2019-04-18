@@ -201,7 +201,7 @@ Doppler's Docker infrastructure
         
     4. Convertimos los certificados para poder crear los docker secrets. Solo en nodo manager:
         ```
-        openssl pkcs12 -in Doppler2018-2020.pfx  -nocerts -out key.pem -node
+        openssl pkcs12 -in Doppler2018-2020.pfx  -nocerts -out key.pem -nodes
         openssl pkcs12 -in Doppler2018-2020.pfx -clcerts -nokeys -out cert.pem
         ```
     5. Creamos los docker secrets para luego asociar al servicio. Solo en nodo manager:
