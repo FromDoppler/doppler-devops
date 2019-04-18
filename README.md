@@ -196,9 +196,9 @@ Doppler's Docker infrastructure
                 index   index.html index.html;
             }
         }
-        
         ```
-        **ESTA CONFIGURACION ES PARA PROD, CAMBIAR PUERTOS SEGUN CORRESPONDA**
+        **esta configuracion es para prod, cambiar puertos segun corresponda**
+        
     4. Convertimos los certificados para poder crear los docker secrets. Solo en nodo manager:
         ```
         openssl pkcs12 -in Doppler2018-2020.pfx  -nocerts -out key.pem -node
@@ -216,9 +216,13 @@ Doppler's Docker infrastructure
         sudo docker service create --mode global --name [Nombre servicio] --update-delay 2m30s --publish published=80,target=80 --publish published=443,target=443 --secret site.key --secret site.crt --secret source=site.conf,target=/etc/nginx/conf.d/site.conf darosw/doppler-webapp:prod
         ```
         El commando --mode global hace referencia a que cada vez que se una un nodo se cree el servicio en el mismo, siempre que tenga la imagen.
+        
         Update-delay es el tiempo de delay en la actualizacion de cada nodo al hacer un docker service update [service_name] --force. Es necesario hacer un force del update ya que nuestro servicio esta constantemente corriendo.
+        
         Los secretos se replicaran en todos los nodos, no hace falta crearlos en los workers.
+        
         Published hace referencia a el puerto externo (o published-port segun docker)
+        
         target hace referencia a el puerto de la aplicacion (o container-port segun docker)
 
   6. TODO realizar docker pull darosw/doppler-webapp:prod/int/qa && docker service update [service_name] --force de manera automatica.
