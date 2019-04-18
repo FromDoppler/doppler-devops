@@ -157,25 +157,70 @@ Doppler's Docker infrastructure
  
     2. Luego se crea el swarm (esto es solo a modo de guia ya que el token esta desactulizado)
         En ubuntu-01:
+        ```
         sudo docker swarm init --advertise-addr [ServerIp]
+        ```
         En ubuntu-02 lo unimos al swarm como worker:
+        ```
         sudo docker swarm join --token SWMTKN-1-3r2339v5uhpcz97mmhsf1i8nex9d84femy4hrtgmnf9iyxlmtu-24q5mefbf9kdg4jg3teuwsjo5 [ServerIp]:2377
- 
+        ```
         Para obetener un token actualizado: sudo docker swarm join-token worker
         Para promover un nodo a manager desde el nodo manager: sudo docker node promote [ServerIp]
  
-5. Creamos el servicio de la api en el swarm
+5. Creamos el servicio de la api/reports-webapp en el swarm
 
     1. Primero nos autenticamos en el repositorio de docker
         docker login (va a pedir username y password)
         Este paso hay que revisarlo con mas profundida porque los accesos a docker quedan guardados en un archivo json sin encriptacion, docker facilita algunas aplicaciones para guardar passwords encriptados pero se colgaba la consola y no se pudo encriptar.
     2. Luego traemos la imagen del repositorio:
-        sudo docker pull andresmoschini/doppler-reports-api
-    3. Creamos el servicio:
-        sudo docker service create --mode global --name (nombre cualquiera) --publish published=XXXX,target=xx andresmoschini/doppler-reports-api
-        el commando --mode global hace referencia a que cada vez que se una un nodo se cree el servicio en el mismo, siempre que tenga la imagen.
+        ```
+        sudo docker pull andresmoschini/doppler-reports-api **Imagen de la api**
+        sudo docker pull darosw/doppler-webapp:prod  **Imagen de webapp-reports** (en el caso de traer la imagen de int o qa cambiar por :int :qa)
+        ```
+    3. Creamos config de nginx, para servir https y redireccionar http a https. Solo en nodo manager:
+        ```
+        sudo nano site.conf
+        server {
+            listen      80 default_server;
+            server_name app.fromdoppler.com;
+            return  301 https://$server_name$request_uri;
+        }
+        server {
+            listen              443 default_server ssl;
+            server_name         app.fromdoopler.com;
+            ssl_certificate     /run/secrets/site.crt;
+            ssl_certificate_key /run/secrets/site.key;
+            
+            location / {
+                root    /usr/share/nginx/html;
+                index   index.html index.html;
+            }
+        }
+        
+        ```
+        **ESTA CONFIGURACION ES PARA PROD, CAMBIAR PUERTOS SEGUN CORRESPONDA**
+    4. Convertimos los certificados para poder crear los docker secrets. Solo en nodo manager:
+        ```
+        openssl pkcs12 -in Doppler2018-2020.pfx  -nocerts -out key.pem -node
+        openssl pkcs12 -in Doppler2018-2020.pfx -clcerts -nokeys -out cert.pem
+        ```
+    5. Creamos los docker secrets para luego asociar al servicio. Solo en nodo manager:
+        ```
+        docker secret create site.key key.pem
+        docker secret create site.crt cert.pem
+        docker secret create site.conf site.conf
+        ```
+        **Solo en el nodo manager, ya que al crear el servicio se replicara en los workers**
+    6. Creamos el servicio:
+        ```
+        sudo docker service create --mode global --name [Nombre servicio] --update-delay 2m30s --publish published=80,target=80 --publish published=443,target=443 --secret site.key --secret site.crt --secret source=site.conf,target=/etc/nginx/conf.d/site.conf darosw/doppler-webapp:prod
+        ```
+        El commando --mode global hace referencia a que cada vez que se una un nodo se cree el servicio en el mismo, siempre que tenga la imagen.
+        Update-delay es el tiempo de delay en la actualizacion de cada nodo al hacer un docker service update [service_name] --force. Es necesario hacer un force del update ya que nuestro servicio esta constantemente corriendo.
+        Los secretos se replicaran en todos los nodos, no hace falta crearlos en los workers.
         Published hace referencia a el puerto externo (o published-port segun docker)
         target hace referencia a el puerto de la aplicacion (o container-port segun docker)
-  
-  
+
+  6. TODO realizar docker pull darosw/doppler-webapp:prod/int/qa && docker service update [service_name] --force de manera automatica.
+   Docker hub tiene implementado un webhook que podriamos usar.
 
