@@ -197,7 +197,28 @@ Doppler's Docker infrastructure
             }
         }
         ```
-        **esta configuracion es para prod, cambiar puertos segun corresponda**
+        **Configuracion para prod**
+        
+        ```
+        sudo nano site2.conf
+        server {
+            listen      8080 default_server;
+            server_name app.fromdoppler.com;            
+        }
+        server {
+            listen              443 default_server ssl;
+            server_name         app.fromdoopler.com;
+            ssl_certificate     /run/secrets/site.crt;
+            ssl_certificate_key /run/secrets/site.key;
+            erro_page   497     https://$host:4443$request_uri;
+            
+            location / {
+                root    /usr/share/nginx/html;
+                index   index.html index.html;
+            }
+        }
+        ```
+        **Configuracion para int**
         
     4. Convertimos los certificados para poder crear los docker secrets. Solo en nodo manager:
         ```
