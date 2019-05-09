@@ -191,6 +191,20 @@ Doppler's Docker infrastructure
             ssl_certificate     /run/secrets/site.crt;
             ssl_certificate_key /run/secrets/site.key;
             
+			gzip				on;
+			gzip_disable		"msie6";
+			gzip_vary			on;
+			gzip_proxied		any;
+			gzip_comp_level		6;
+			gzip_buffers		16 8k;
+			gzip_http_version	1.1;
+			gzip_types			text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript application/javascript;
+			
+			location ~* ^.+\.html$ {
+				expires 1h;
+				root    /usr/share/nginx/html;
+                index   index.html index.html;
+			}			
             location / {
                 root    /usr/share/nginx/html;
                 index   index.html index.html;
@@ -212,6 +226,20 @@ Doppler's Docker infrastructure
             ssl_certificate_key /run/secrets/site.key;
             erro_page   497     https://$host:4443$request_uri;
             
+			gzip				on;
+			gzip_disable		"msie6";
+			gzip_vary			on;
+			gzip_proxied		any;
+			gzip_comp_level		6;
+			gzip_buffers		16 8k;
+			gzip_http_version	1.1;
+			gzip_types			text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript application/javascript;
+			
+			location ~* ^.+\.html$ {
+				expires 1h;
+				root    /usr/share/nginx/html;
+                index   index.html index.html;
+			}
             location / {
                 root    /usr/share/nginx/html;
                 index   index.html index.html;
