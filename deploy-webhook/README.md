@@ -8,21 +8,21 @@ Flow for automated deployment:
 ## Configuration
 The `config.json` file defines each environment.
 Inside each environment config is the name of an image and tag to listen for, and the service that should be updated to run it:
-	```
-    {
-      "production": {
-		"dariosw/doppler-webapp:int-v1": {
-			"service": "WEBAPP-INT"
+	
+	{
+	    "production": {
+	 	"dariosw/doppler-webapp:int-v1": {
+		    "service": "WEBAPP-INT"
 		},
 		"dariosw/doppler-webapp:qa-v1": {
-			"service": "WEBAPP-QA"
+		    "service": "WEBAPP-QA"
 		},
 		"dariosw/doppler-webapp:prod-v1": {
-			"service": "WEBAPP"
+		    "service": "WEBAPP"
 		}
-      }
-    }
-	```
+	    }
+	}
+	    
 In the `index.js` file are the docker commands. It should be noted that there are two types of this files, the one that does the image pulling and the service update on the manager node and the other does the image pulling on worker nodes.
 
 ## Build image and create service to Docker Swarm
