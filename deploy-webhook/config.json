@@ -1,0 +1,22 @@
+{
+  "production": {
+    "dariosw/doppler-webapp:int-v1": {
+      "service": "WEBAPP-INT"
+    },
+    "dariosw/doppler-webapp:qa-v1": {
+      "service": "WEBAPP-QA"
+    },
+	"dariosw/doppler-webapp:prod-v1": {
+      "service": "WEBAPP"
+    },
+  },
+  "development": {
+    "my-org/my-repo:development": {
+      "service": "my-docker-service"
+    },
+    "my-org/my-other-repo:development": {
+      "service": "my-other-docker-service"
+    }
+
+  }
+}
