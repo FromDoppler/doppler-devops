@@ -27,11 +27,11 @@ In the `index.js` file are the docker commands. It should be noted that there ar
 
 ## Build image and create service to Docker Swarm
 
-*Build Image (on managers and workers nodes)
+* Build Image (on managers and workers nodes)
 	```
 	docker build {DeployWebhookPath} -t {ImageName}
 	```
-*Create service (on managers and workers nodes):
+* Create service (on managers and workers nodes):
     ```
     docker service create --name {ServiceName} --publish={ManagerPort}:{ManagerPort} --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
     -e PORT={ManagerPort} -e CONFIG="production" -e TOKEN={Token} -e USERNAME={DockerHubUserName} -e PASSWORD={DockerHubPW} \
